@@ -1,21 +1,43 @@
-'use strict';
-// mi-app-node/index.js
-// This is the main entry point of the application.
+const express = require('express');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const flash = require('connect-flash');
+const passport = require('passport');
+const methodOverride = require('method-override');
+const exphbs = require('express-handlebars');
 
-// Importing the math module
-const math = require('./math');
+const app = express();
+const port = 3000;
 
-// Using the math module to perform some operations
-const a = 10;
-const b = 5;
+// Configuración de handlebars
+app.engine('handlebars', exphbs.engine());
+app.set('view engine', 'handlebars');
 
-console.log(`Addition of ${a} and ${b}:`, math.add(a, b));
-console.log(`Subtraction of ${a} and ${b}:`, math.subtract(a, b));
-console.log(`Multiplication of ${a} and ${b}:`, math.multiply(a, b));
-console.log(`Division of ${a} by ${b}:`, math.divide(a, b));
-console.log(`Square of ${a}:`, math.square(a));
-console.log(`Square root of ${a}:`, math.squareRoot(a));
+// Middlewares
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
+app.use(methodOverride('_method'));
+app.use(session({
+    secret: 'secreto',
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 
+// Conexión MongoDB
+const dbUri = 'mongodb://admin:secret@mongo:27017/mi-app-db'; // Cambia 'mi-app-db' por el nombre de tu base de datos
 
+mongoose.connect(dbUri)
+    .then(() => console.log('MongoDB conectado'))
+    .catch(err => console.log(err));
 
+// Ruta ejemplo
+app.get('/', (req, res) => {
+    res.send('Hola desde mi app con MongoDB y Docker!');
+});
 
+app.listen(port, () => {
+    console.log(`Servidor escuchando en http://localhost:${port}`);
+});

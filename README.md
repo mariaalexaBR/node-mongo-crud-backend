@@ -7,8 +7,11 @@ Repositorio con una implementación básica de conexión a MongoDB usando Node.j
 # Verificar las imagenes
 - docker image
 
-# Ejecutar el contenedor
-- docker run --rm mi-app-node
+# Descargar la imagen de Mongo
+- docker pull Mongo
+
+# Ejecutar el archivo Docker-Compose.yml
+- docker compose up
 
 # Nota
 <!--
